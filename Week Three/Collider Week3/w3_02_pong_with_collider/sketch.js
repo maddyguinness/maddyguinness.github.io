@@ -17,7 +17,7 @@ var p2Up = false;
 var p2Down = false;
 var margin = 20;
 var cnv;
-var paddleBounceSFX, hitColliderSFX;
+//var paddleBounceSFX, hitColliderSFX;
 var collider;
 
 function preload() {
@@ -35,8 +35,8 @@ function windowResized() {
 }
 
 function setup() {
-  paddleBounceSFX = loadSound('assets/ballCollide.mp3', function() { console.log("loaded"); });
-  hitColliderSFX = loadSound('assets/hitCollider.mp3', function() { console.log("loaded"); });
+  // paddleBounceSFX = loadSound('assets/ballCollide.mp3', function() { console.log("loaded"); });
+  // hitColliderSFX = loadSound('assets/hitCollider.mp3', function() { console.log("loaded"); });
   cnv = createCanvas(900, 500);
   centerCanvas();
   ball = new Ball();
@@ -203,15 +203,15 @@ function Paddle(num) {
     other.speed += 1;
     other.vel.x = cos(angle) * other.speed;
     other.vel.y = sin(angle) * other.speed;
-    paddleBounceSFX.play();
+    //paddleBounceSFX.play();
   }
 }
 
 function Collider() {
-  this.pos = new PVector(30, 30);
+  this.pos = new createVector(30, 30);
   this.speed = 0;
   this.angle = 70;
-  this.vel = new PVector(cos(this.angle) * this.speed, sin(this.angle) * this.speed);
+  this.vel = new createVector(cos(this.angle) * this.speed, sin(this.angle) * this.speed);
   this.width = 0;
   this.height = 0;
   this.c = color (255,0,0);
@@ -222,7 +222,7 @@ function Collider() {
 
   this.display = function() {
     fill(this.c);
-    rect(pos,pos,this.width,this.height);
+    rect(this.pos,this.pos,this.width,this.height);
   }
 
   this.collided = function(other) {
