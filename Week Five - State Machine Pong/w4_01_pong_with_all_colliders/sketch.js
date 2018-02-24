@@ -17,7 +17,7 @@ var p2Up = false;
 var p2Down = false;
 var margin = 20;
 var cnv;
-var paddleBounceSFX, hitColliderSFX;
+//var paddleBounceSFX, hitColliderSFX;
 var colliders = [];
 var r = 0;
 var g=0;
@@ -29,8 +29,8 @@ var Allysa;
 var ellie;
 var spaceDown = false;
 
-var levelTimer;
-var timeForLevel = 5000;
+// var levelTimer;
+// var timeForLevel = 5000;
 
 
 
@@ -82,7 +82,7 @@ function drawScene(whichScene){
  
 switch(currentState){
   case sceneState.START:
-    background(200);
+    background(mouseX,mouseY,mouseX);
     textSize(50);
     textAlign(CENTER,CENTER);
     text("Welcome to Pong!",width/2,height/2- 50);
