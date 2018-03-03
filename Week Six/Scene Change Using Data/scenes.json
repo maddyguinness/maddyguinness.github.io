@@ -1,0 +1,39 @@
+{
+  "scenes": [
+    {
+      "speech": "I talk, but I do not speak my mind. I hear words, but I do not listen to thoughts",
+      "character": "Jane",
+      "sceneText": "This is scene 0",
+      "options": ["go talk to Diane","go talk to Mike", "go talk to Holly", "go talk to John"],
+      "nextScenes": [1,2,3,4]
+    },
+    {
+      "speech": "When I wake, all see me. When I sleep, all hear me",
+      "character": "Diane",
+      "sceneText": "This is scene 1",
+      "options": ["go talk to Mike","go talk to Holly", "go talk to John", "go talk to Jane"],
+      "nextScenes": [2, 3,4,0]
+    },
+    {
+      "speech": "Many heads are on my shoulders. Many hands are at my feet",
+      "character": "Mike",
+      "sceneText": "This is scene 2",
+      "options": ["go talk to Holly","go talk to John", "go talk to Diane", "go talk to Jane"],
+      "nextScenes": [3, 4, 1,0] 
+    },
+    {
+      "speech": "The strongest steel cannot break my visage. But the softest whisper can destroy me. The quietest whimper can be heard.",
+      "character": "Holly",
+      "sceneText": "This is scene 3",
+      "options": ["go talk to John","go talk to Jane", "go talk to Diane", "go talk to Mike"],
+      "nextScenes": [4, 0, 1, 2]
+    },
+    {
+      "speech": "The answer is an Actor!",
+      "character": "John",
+      "sceneText": "This is scene 4",
+      "options": ["go talk to Jane","go talk to Mike", "go talk to Holly", "go talk to Diane"],
+      "nextScenes": [0, 1, 2, 3]
+    }
+  ]
+}
