@@ -225,6 +225,7 @@ function Scene(data) {
 			text("Press S to Start", width / 2, height / 2 );
 			text("Use WASD to move", width / 2, height / 2 + 50);
 			text("Press X to reset at any time", width / 2, height / 2 + 100);
+			text("Push the Crate into the Green Marker", width / 2, height / 2 + 150);
 
 
 			textSize(40);
@@ -267,7 +268,7 @@ function Goal(type, position) {
 	this.display = function () {
 		this.pos = createVector(this.gridPos.x * blockSize, this.gridPos.y * blockSize);
 		stroke(100);
-		fill(60,60,60);
+		fill(0,255,0);
 		rect(this.pos.x, this.pos.y, this.blockSize, this.blockSize);
 	}
 }
