@@ -17,9 +17,12 @@ var wallY = 0;
 
 var timerOb;
 
+var type;
+
 var playerState = {
 	ALIVE: 0,
-	DEAD: 1
+	DEAD: 1,
+	WIN: 2
 };
 
 
@@ -32,6 +35,8 @@ function preload() {
 	sceneData = loadJSON('Data.json');
 	crate = loadImage('crate.png');
 	tile = loadImage('Kitchen Tiles.png');
+
+	type = loadFont('Paintbrush.ttf');
 
 }
 
@@ -51,11 +56,22 @@ function draw() {
 
 		case playerState.ALIVE:
 			scenes[currentScene].display();
+
+			if (key == 'X') {
+				timer = 20;
+				for(var i = 0; i < sceneData.scenes.length; i++) {
+					scenes[i].reset(sceneData.scenes[i]);
+				}
+			}
 			break;
+
 
 		case playerState.DEAD:
 			background(255, 0, 0);
 			fill(255);
+			textAlign(CENTER);
+			textFont(type);
+			textSize(50);
 			text("Game Over", width / 2 - 70, height / 2);
 			text("Press X to Restart", width / 2 - 70, height / 2 + 50)
 
@@ -67,6 +83,26 @@ function draw() {
 					scenes[i].reset(sceneData.scenes[i]);
 				}
 			}
+			break;
+
+		case playerState.WIN:
+			background(0, 255, 0);
+			fill(255);
+			textAlign(CENTER);
+			textFont(type);
+			textSize(50);
+
+			text("You Win!", width / 2, height / 2);
+			text("Press X to Restart", width / 2, height / 2 + 50)
+			if (key == 'X') {
+				currentScene = 0;
+				currentState = playerState.ALIVE;
+				timer = 20;
+				for(var i = 0; i < sceneData.scenes.length; i++) {
+					scenes[i].reset(sceneData.scenes[i]);
+				}
+			}
+
 		default:
 			break;
 	}
@@ -80,6 +116,11 @@ function CreateScenesFromData(data) {
 	}
 }
 
+function NextLevel() {
+	currentScene++;
+	player.gridPos = scenes[currentScene].playerPos;
+}
+
 function DrawGrid(type, position) {
 
 	this.blockSize = blockSize;
@@ -88,7 +129,6 @@ function DrawGrid(type, position) {
 
 	this.display = function () {
 		this.pos = createVector(this.gridPos.x * blockSize, this.gridPos.y * blockSize);
-		//fill(50);
 		stroke(100);
 		noFill();
 		rect(this.pos.x, this.pos.y, this.blockSize, this.blockSize);
@@ -132,19 +172,14 @@ function Scene(data) {
 	this.reset = function(data) {
 		if(data.layout) {
 
-			// Go through all rows and columns from the data
 			var rows = data.layout;
 			for (var i = 0; i < rows.length; i++) {
-				// For each row we create a new array of columns for our grid blocks
 				this.gridBlocks[i] = [];
 				var cols = rows[i];
 	
 	
 				for (var j = 0; j < cols.length; j++) {
-					// Depending on the type of object we add it to the grid
-					// The position of objects will be relative to the grid and not the the canvas
-					// Inside each object its canvas position will be calculated based on the object's
-					// position on the grid and the size of each block in pixels
+					
 					var tileMap = cols[j];
 					var gameObj;
 					var position = createVector(j, i);
@@ -160,6 +195,9 @@ function Scene(data) {
 					}
 					else if(tileMap == 3) {
 						gameObj = new Box(tileMap, position);
+					}
+					else if(tileMap == 4) {
+						gameObj = new Goal(tileMap, position);
 					}
 	
 					this.gridBlocks[i].push(gameObj);
@@ -179,11 +217,14 @@ function Scene(data) {
 			textAlign(CENTER);
 
 			fill(255);
-			textSize(30);
-			text("Sokoban!", width / 2, height / 2);
+			textSize(50);
+
+			textFont(type);
+			text("Sokoban!", width / 2, height / 2-50);
 			textSize(20);
-			text("Press S to Start", width / 2, height / 2 + 50);
-			text("Use WASD to move", width / 2, height / 2 + 100);
+			text("Press S to Start", width / 2, height / 2 );
+			text("Use WASD to move", width / 2, height / 2 + 50);
+			text("Press X to reset at any time", width / 2, height / 2 + 100);
 
 
 			textSize(40);
@@ -215,6 +256,20 @@ function Scene(data) {
 	}
 
 	this.reset(data);
+}
+
+function Goal(type, position) {
+
+	this.blockSize = blockSize;
+	this.type = type;
+	this.gridPos = position;
+
+	this.display = function () {
+		this.pos = createVector(this.gridPos.x * blockSize, this.gridPos.y * blockSize);
+		stroke(100);
+		fill(60,60,60);
+		rect(this.pos.x, this.pos.y, this.blockSize, this.blockSize);
+	}
 }
 
 function Wall(type, position) {
@@ -250,9 +305,7 @@ function keyPressed() {
 		return;
 	}
 
-	// Check if player can move based on pressed key
 
-	// Calculate what would be the next position
 	var x = nx = nnx = player.gridPos.x;
 	var y = ny = nny = player.gridPos.y;
 	if(key === 'W') {
@@ -278,36 +331,40 @@ function keyPressed() {
 	if(!scenes || !scenes[currentScene])
 		return;
 
-	// Check if we can move to that position
 	var blocks = scenes[currentScene].gridBlocks;
-	// If that position contains a wall block then we can't go there
 	if(!blocks || !blocks[ny][nx] || blocks[ny][nx].type == 1) {
 		return;
 	}
 
-	// If the next position is a occupied by a block we need to check if that block can move so
 	if(blocks[ny][nx].type == 3 &&
-		(nny < 0 || nnx < 0 || nny >= boardSize.y || nnx >= boardSize.x || // we start by checking if the next next position is within the bounds of the scene
-		blocks[nny][nnx].type != 0)) { // and if the next next position is free
+		(nny < 0 || nnx < 0 || nny >= boardSize.y || nnx >= boardSize.x || 
+		blocks[nny][nnx].type == 2 || blocks[nny][nnx].type == 1)) { 
 		
 		return;
 	}
 
+
+	if(blocks[ny][nx].type == 3 &&
+		(nny < 0 || nnx < 0 || nny >= boardSize.y || nnx >= boardSize.x || 
+		blocks[nny][nnx].type == 4)) { 
+
+		
+			currentState = playerState.WIN;
 	
-	// If we're moving a block we need to update it
+		
+	}
+
+
+
+	
 	if(blocks[ny][nx].type == 3) {
-		// Update the block's position on the grid
 		blocks[ny][nx].gridPos = createVector(nnx, nny);
-		// Update the block's new position
 		blocks[nny][nnx] = blocks[ny][nx];
 	}
 	
-	// Update the player's new position
 	blocks[ny][nx] = blocks[y][x];
-	// Update the player's old position
 	blocks[y][x] = new DrawGrid(0, createVector(x, y) );
 
-	// Update the player's position on the grid
 	player.gridPos.x = nx;
 	player.gridPos.y = ny;
 }
