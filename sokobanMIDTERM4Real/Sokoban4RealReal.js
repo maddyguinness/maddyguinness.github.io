@@ -1,10 +1,13 @@
 
+//FUNCTIONING 
+
 var blockSize = 150;
 var boardSize;
 
 var timer = 20;
 
-var player;
+var player = [];
+var playerCounter = 1 ;
 
 var sceneData;
 var currentScene = 0;
@@ -18,6 +21,8 @@ var wallY = 0;
 var timerOb;
 
 var type;
+
+var updatePos = true ;
 
 var playerState = {
 	ALIVE: 0,
@@ -50,6 +55,7 @@ function setup() {
 }
 
 function draw() {
+	// console.log(player.gridPos.y) ;
 	background(0);
 
 	switch (currentState) {
@@ -118,7 +124,8 @@ function CreateScenesFromData(data) {
 
 function NextLevel() {
 	currentScene++;
-	player.gridPos = scenes[currentScene].playerPos;
+	console.log(scenes[currentScene].playerPos) ;
+	player[currentScene].gridPos = scenes[currentScene].playerPos;
 }
 
 function DrawGrid(type, position) {
@@ -143,7 +150,10 @@ function DrawPlayer(type, state, position) {
 
 	this.display = function () {
 		this.pos = createVector(this.gridPos.x * this.blockSize, this.gridPos.y * this.blockSize);
-
+		console.log("drawing player") ;
+		if(currentScene == 2) {
+			console.log(this.gridPos) ;
+		}
 		fill(255, 0, 0);
 		rect(this.pos.x, this.pos.y, this.blockSize, this.blockSize);
 	}
@@ -170,6 +180,7 @@ function Scene(data) {
 	this.levelText = data.levelText;
 
 	this.reset = function(data) {
+		console.log(data.layout) ;
 		if(data.layout) {
 
 			var rows = data.layout;
@@ -190,8 +201,11 @@ function Scene(data) {
 						gameObj = new Wall(tileMap, position);
 					}
 					else if(tileMap == 2) {
-						player = new DrawPlayer(tileMap, currentState, position);
-						gameObj = player;
+						player[playerCounter] = new DrawPlayer(tileMap, currentState, position);
+						gameObj = player[playerCounter];
+						console.log("player position is " + player[playerCounter].gridPos) ;
+						console.log("playerCounter is " + playerCounter) ;
+						playerCounter++ ;
 					}
 					else if(tileMap == 3) {
 						gameObj = new Box(tileMap, position);
@@ -244,6 +258,26 @@ function Scene(data) {
 		}
 
 		if (currentScene == 2) {
+
+			for (var i = 0; i < this.gridBlocks.length; i++) {
+				for (var j = 0; j < this.gridBlocks.length; j++) {
+					this.gridBlocks[i][j].display();
+				}
+			}
+
+			timerOb.display();
+		}
+		if (currentScene == 3) {
+
+			for (var i = 0; i < this.gridBlocks.length; i++) {
+				for (var j = 0; j < this.gridBlocks.length; j++) {
+					this.gridBlocks[i][j].display();
+				}
+			}
+
+			timerOb.display();
+		}
+		if (currentScene == 4) {
 
 			for (var i = 0; i < this.gridBlocks.length; i++) {
 				for (var j = 0; j < this.gridBlocks.length; j++) {
@@ -307,11 +341,14 @@ function keyPressed() {
 	}
 
 
-	var x = nx = nnx = player.gridPos.x;
-	var y = ny = nny = player.gridPos.y;
+	var x = nx = nnx = player[currentScene].gridPos.x;
+	var y = ny = nny = player[currentScene].gridPos.y;
 	if(key === 'W') {
 		ny--;
 		nny = ny - 1;
+		// console.log("running up") ;
+		// console.log(ny) ;
+		// console.log(nny) ;
 	}
 	else if(key === 'S') {
 		ny++;
@@ -349,11 +386,18 @@ function keyPressed() {
 		(nny < 0 || nnx < 0 || nny >= boardSize.y || nnx >= boardSize.x || 
 		blocks[nny][nnx].type == 4)) { 
 
-		
+		if (currentScene < 4){
+			currentScene++;
+			console.log(player[currentScene].gridPos) ;
+			//currentState = playerState.WIN;
+			updatePos = false ;
+		}
+
+		if (currentScene == 4){
 			currentState = playerState.WIN;
-	
-		
+		}
 	}
+
 
 
 
@@ -366,6 +410,12 @@ function keyPressed() {
 	blocks[ny][nx] = blocks[y][x];
 	blocks[y][x] = new DrawGrid(0, createVector(x, y) );
 
-	player.gridPos.x = nx;
-	player.gridPos.y = ny;
+	if(updatePos == true) {
+		player[currentScene].gridPos.x = nx;
+		player[currentScene].gridPos.y = ny;
+	} else {
+		// nx = player[currentScene].gridPos.x ;
+		// ny = player[currentScene].gridPos.y ;
+		updatePos = true ;
+	}
 }
