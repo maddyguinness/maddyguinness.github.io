@@ -4,7 +4,7 @@ var currentWeather;
 
 var description;
 var input;
-var api = 'http://api.openweathermap.org/data/2.5/weather?q=';
+var api = 'https://api.openweathermap.org/data/2.5/weather?q=';
 var apiKey = '&APPID=60bc5c9d42ac4995d6aa2fbd0baea13c';
 var celcius = '&units=metric';
 
