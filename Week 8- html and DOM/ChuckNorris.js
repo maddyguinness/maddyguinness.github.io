@@ -14,7 +14,7 @@ function setup(){
   shout = createAudio('chuck-norris_1.mp3');  
   buttonColour = color(150,20,200);
 
-  loadJSON('http://api.icndb.com/jokes/', gotJoke);
+  loadJSON('https://api.icndb.com/jokes/', gotJoke);
 
   title = createElement('h1', 'Joke Generator');
   //title.center('horizontal');
@@ -53,7 +53,6 @@ function onClick(){
     shout.play();
     newJoke = createElement('h3', currentJoke.value[randomNum].joke);
     newJoke.position(30,350);
-    //console.log(currentJoke.value[randomNum].joke) ;
    
 
 }
