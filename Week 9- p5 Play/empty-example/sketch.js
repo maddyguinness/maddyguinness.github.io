@@ -83,7 +83,7 @@ function draw() {
 		  	direction = random(0,360);
 
 			var heartImg = loadImage('heart.png');
-			var newHeart = createSprite(mouseX, mouseY);
+			var newHeart = createSprite(200, 200);
 			newHeart.addImage('heart',heartImg);
 			newHeart.setSpeed(6,direction);
 			newHeart.scale = 0.2;
