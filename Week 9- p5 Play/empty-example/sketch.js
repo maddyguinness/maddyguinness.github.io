@@ -16,6 +16,9 @@ function setup()
   	createCanvas(800,700);
   	background(200,0,50);
 
+  	textSize(15);
+  	text("Catch the hearts <3",width/2,650);
+
   	
   	hearts = new Group();
 
