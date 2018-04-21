@@ -28,7 +28,7 @@ function setup()
 		  	heartSprite = createSprite(random(0,width),random(0,height));
 		 	heartSprite.addImage('heart',heartImg);
 		 	heartSprite.setSpeed(2,direction);
-		 	heartSprite.scale =random(0.2,2);
+		 	heartSprite.scale =random(0.2,1.5);
 		 	heartSprite.setCollider("circle", 0,0,100)
 		 	heartSprite.mouseActive = true;
 
