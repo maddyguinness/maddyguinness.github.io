@@ -124,5 +124,7 @@ function draw() {
   	}
 
 	drawSprites();
+	textSize(15);
+  	text("Catch the hearts <3",width/2,650);
 		
 }
