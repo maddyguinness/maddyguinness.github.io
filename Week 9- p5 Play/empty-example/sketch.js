@@ -87,7 +87,7 @@ function draw() {
 			newHeart.addImage('heart',heartImg);
 			newHeart.setSpeed(6,direction);
 			newHeart.scale = 0.2;
-			newHeart.setCollider("circle", 0,0,100)
+			newHeart.setCollider("circle", -50,-50, newHeart.scale *150);
 			newHeart.mouseActive = true;
 
 			newHeart.onMouseOver = function(){
@@ -101,7 +101,7 @@ function draw() {
   for(var i=0; i< allSprites.length; i++){
   		var s = allSprites[i];
 	  	
-	  	if(s.position.x<0) {
+	  	if(s.position.x<-50) {
 	    s.position.x = 1;
 	    s.velocity.x = abs(s.velocity.x);
 	  }
@@ -111,7 +111,7 @@ function draw() {
 	    s.velocity.x = -abs(s.velocity.x);
 	    }
 	  
-	  if(s.position.y<0) {
+	  if(s.position.y<50) {
 	    s.position.y = 1;
 	    s.velocity.y = abs(s.velocity.y);
 	  }
