@@ -40,6 +40,8 @@ var currentState = sceneState.ONE;
 
 var button;
 
+var colourSlider;
+
 function setup(){
 	background(0);	
 
@@ -54,7 +56,12 @@ function setup(){
 	font = loadFont('Pokemon Solid.ttf');
 	
 	backgroundImage = loadImage('background.jpeg');
-		
+
+
+	sel = createSelect();
+	colourSlider = createSlider(0, 255, 100);
+  	colourSlider.position(20, 70);
+
 }
 
 function searchPokemon(){
@@ -66,7 +73,6 @@ function searchPokemon(){
 
 function gotData(data){
 	currentPokemon = data;
-	print("looking");
 	for(var i = 0; i < 500; i++){
 		print('findingPokemon ');
 		if (chosenPokemon === currentPokemon.pokemon[i].name) {
@@ -80,7 +86,7 @@ function gotData(data){
 			heightText = currentPokemon.pokemon[i].height;
 			jName =  currentPokemon.pokemon[i].name_jp_romaji;
 
-			if([i]<10){
+			if([i]<=9){
 			pokeImage = loadImage('POKEMON-2/000'+id+'.png');
 			}
 			if([i] >= 10 && [i] <= 99){
@@ -92,6 +98,9 @@ function gotData(data){
 		
 		}
 	}
+	for (var i = 0; i < paintmarks.length; i++) {
+		paintmarks.splice(0, paintmarks.length);
+	}
 }
 
 
@@ -102,7 +111,7 @@ function draw(){
 
 	fill(255);
 	textSize(20);
-	text("Press: 1 for Home Screen, 2 for Pokedex and 3 for More Information", 100,670)
+	text("Press: 1 for Start Screen, 2 for Pokedex and 3 for the Gallery", 100,670)
 	
 }
 
@@ -122,24 +131,20 @@ function keyPressed(){
 	}
 
 function mouseDragged() {
-	if(currentState == sceneState.THREE){
-  paintmarks.push(new PaintMark(createVector(mouseX, mouseY),10 , 10, 100, 
-    15,15));
+	if(currentState == sceneState.THREE && mouseY >100){
+  		paintmarks.push(new PaintMark(createVector(mouseX, mouseY),10 , 10));
 	}
 }
 
-function PaintMark(position, red, green, blue,size,size) {
-  this.red = red;
-  this.green = green;
-  this.blue = blue;
-
+function PaintMark(position,size,size) {
+  
   this.size = size;
 
   this.position = position;
 
   this.display = function() {
     noStroke();
-    fill(this.red,this.green, this.blue);
+    fill(colourSlider.value(), 255, 255, 255);
     ellipse(this.position.x, this.position.y, this.size, this.size);
   }
 
@@ -150,9 +155,12 @@ function drawScene(whichScene){
 	switch (currentState){
 		case sceneState.ONE:
 			
+			if(sel != null){
+			sel.hide();
+			colourSlider.hide();
+			}
+
 			push();
-			//scale(0.3);
-			
 			var oak = createSprite(width- 250, height-300);
 			oak.addImage(prof);
 			
@@ -173,6 +181,12 @@ function drawScene(whichScene){
 
 		break;
 		case sceneState.TWO:
+
+			if(sel != null)
+				{
+				colourSlider.hide();
+				}
+
 			background(0,100,0);
 			push();
 			scale(0.6);
@@ -183,7 +197,7 @@ function drawScene(whichScene){
 			textSize(30);
 
 
-			text(chosenPokemon,585,290);
+			//text(chosenPokemon,585,290);
 
 			fill(0);
 			textSize(15);
@@ -192,12 +206,11 @@ function drawScene(whichScene){
 			text("Height: " + heightText,135,330);
 			text("Weight: " + weightText,135,370);
 
-
+			sel.show();
 
 			if(doOnce == true){
 			textAlign(CENTER);
-			sel = createSelect();
-			sel.position(550, 60);
+			sel.position(550,275);
 
 			
 			for(i = 0; i< 500; i++){
@@ -209,14 +222,23 @@ function drawScene(whichScene){
 		}
 		break;
 		case sceneState.THREE:
+				colorMode(HSB, 255);
+
+				if(sel != null)
+				{
+				sel.hide();
+				}
 
 				image(backgroundImage,0,0,900,700);			
-				print('add image');
 				image(pokeImage, 250, 150, 500,500);
 			
 				for (var i = 0; i < paintmarks.length; i++) {
 				    paintmarks[i].display();
 				  }
+				textSize(15);
+				fill(0);
+				text('Decorate your pokemon by clicking and dragging the mouse. Press backspace to start over', 10 , 30);
+				colourSlider.show();
 
 				  
 		default:	
